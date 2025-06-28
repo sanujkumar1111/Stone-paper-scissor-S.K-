@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors - Level Edition</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 900px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #00eeff, 0 0 20px #00eeff;
+            letter-spacing: 3px;
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #00eeff, 0 0 20px #00eeff; }
+            to { text-shadow: 0 0 15px #00eeff, 0 0 30px #00eeff, 0 0 40px #00eeff; }
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .level-container {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .level-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: #ffcc00;
+        }
+
+        .level-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .level-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            border-radius: 50px;
+            padding: 8px 15px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .level-btn.active {
+            background: linear-gradient(45deg, #4ecdc4, #1a2a6c);
+            box-shadow: 0 0 10px #00eeff;
+        }
+
+        .level-btn:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            gap: 20px;
+        }
+
+        .score-box {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 20px;
+            flex: 1;
+            min-width: 150px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .score-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #ffcc00;
+        }
+
+        .score {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .choices {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+
+        .choice {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            background: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 5px solid transparent;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .choice:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #ffcc00;
+            box-shadow: 0 0 20px #ffcc00;
+        }
+
+        .choice:active {
+            transform: scale(0.95);
+        }
+
+        #rock { color: #ff6b6b; }
+        #paper { color: #4ecdc4; }
+        #scissors { color: #ffd166; }
+
+        .vs-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 50px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .choice-display {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 7rem;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .choice-label {
+            position: absolute;
+            top: -30px;
+            font-weight: bold;
+            color: #ffcc00;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
+        }
+
+        .vs-text {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #ffcc00;
+            text-shadow: 0 0 10px #ffcc00;
+        }
+
+        .result {
+            margin: 30px 0;
+            min-height: 60px;
+        }
+
+        .result-text {
+            font-size: 2rem;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .win { color: #4ecdc4; }
+        .lose { color: #ff6b6b; }
+        .draw { color: #ffcc00; }
+
+        .controls {
+            margin: 30px 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background: linear-gradient(45deg, #ff6b6b, #ffcc00);
+            border: none;
+            border-radius: 50px;
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #music-toggle {
+            background: linear-gradient(45deg, #4ecdc4, #1a2a6c);
+        }
+
+        .level-description {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .level-description h3 {
+            color: #ffcc00;
+            margin-bottom: 10px;
+        }
+
+        .level-description p {
+            line-height: 1.6;
+        }
+
+        .animated-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0) rotate(0deg); }
+            100% { transform: translateY(-1000px) translateX(1000px) rotate(720deg); }
+        }
+
+        /* Animations */
+        @keyframes playerShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-20px); }
+            75% { transform: translateX(20px); }
+        }
+
+        @keyframes computerShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(20px); }
+            75% { transform: translateX(-20px); }
+        }
+
+        .player-animation {
+            animation: playerShake 0.5s ease 3;
+        }
+
+        .computer-animation {
+            animation: computerShake 0.5s ease 3;
+        }
+
+        .pulse {
+            animation: pulse 0.5s ease;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 768px) {
+            .choices, .vs-area {
+                gap: 15px;
+            }
+            
+            .choice {
+                width: 100px;
+                height: 100px;
+                font-size: 4rem;
+            }
+            
+            .choice-display {
+                width: 140px;
+                height: 140px;
+                font-size: 5rem;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .game-info {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg" id="animated-bg"></div>
+    
+    <div class="container">
+        <h1><i class="fas fa-fist-raised"></i> ROCK PAPER SCISSORS <i class="fas fa-hand-scissors"></i></h1>
+        
+        <div class="game-info">
+            <div class="level-container">
+                <div class="level-title">DIFFICULTY LEVEL</div>
+                <div class="level-buttons">
+                    <button class="level-btn active" data-level="easy">Easy</button>
+                    <button class="level-btn" data-level="medium">Medium</button>
+                    <button class="level-btn" data-level="hard">Hard</button>
+                </div>
+            </div>
+            
+            <div class="level-container">
+                <div class="level-title">CURRENT LEVEL</div>
+                <div class="score" id="current-level">Easy</div>
+            </div>
+        </div>
+        
+        <div class="level-description">
+            <h3>About Difficulty Levels:</h3>
+            <p>
+                <strong>Easy</strong>: Computer makes random choices<br>
+                <strong>Medium</strong>: Computer counters your last move<br>
+                <strong>Hard</strong>: Computer predicts your patterns
+            </p>
+        </div>
+        
+        <div class="score-board">
+            <div class="score-box">
+                <div class="score-title">PLAYER</div>
+                <div class="score" id="player-score">0</div>
+            </div>
+            <div class="score-box">
+                <div class="score-title">COMPUTER</div>
+                <div class="score" id="computer-score">0</div>
+            </div>
+        </div>
+        
+        <div class="choices">
+            <div class="choice" id="rock" title="Rock"><i class="fas fa-fist-raised"></i></div>
+            <div class="choice" id="paper" title="Paper"><i class="fas fa-hand-paper"></i></div>
+            <div class="choice" id="scissors" title="Scissors"><i class="fas fa-hand-scissors"></i></div>
+        </div>
+        
+        <div class="vs-area">
+            <div class="choice-display">
+                <div class="choice-label">YOU</div>
+                <div id="player-choice">❓</div>
+            </div>
+            <div class="vs-text">VS</div>
+            <div class="choice-display">
+                <div class="choice-label">COMPUTER</div>
+                <div id="computer-choice">❓</div>
+            </div>
+        </div>
+        
+        <div class="result">
+            <div class="result-text" id="result-text">Choose your move to start!</div>
+        </div>
+        
+        <div class="controls">
+            <button id="reset-btn"><i class="fas fa-redo"></i> Reset Game</button>
+            <button id="music-toggle"><i class="fas fa-music"></i> Music: On</button>
+            <button id="how-to-play"><i class="fas fa-question-circle"></i> How to Play</button>
+        </div>
+    </div>
+    
+    <audio id="bg-music" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
+    </audio>
+    
+    <audio id="win-sound">
+        <source src="https://www.soundjay.com/misc/sounds/magic-chime-01.mp3" type="audio/mp3">
+    </audio>
+    
+    <audio id="lose-sound">
+        <source src="https://www.soundjay.com/misc/sounds/fail-trombone-03.mp3" type="audio/mp3">
+    </audio>
+    
+    <audio id="draw-sound">
+        <source src="https://www.soundjay.com/buttons/sounds/button-09.mp3" type="audio/mp3">
+    </audio>
+    
+    <audio id="click-sound">
+        <source src="https://www.soundjay.com/buttons/sounds/button-10.mp3" type="audio/mp3">
+    </audio>
+
+    <script>
+        // Game variables
+        let playerScore = 0;
+        let computerScore = 0;
+        let gameOver = false;
+        let musicOn = true;
+        let currentLevel = 'easy';
+        let playerHistory = [];
+        
+        // DOM elements
+        const playerScoreEl = document.getElementById('player-score');
+        const computerScoreEl = document.getElementById('computer-score');
+        const playerChoiceEl = document.getElementById('player-choice');
+        const computerChoiceEl = document.getElementById('computer-choice');
+        const resultTextEl = document.getElementById('result-text');
+        const resetBtn = document.getElementById('reset-btn');
+        const musicToggle = document.getElementById('music-toggle');
+        const howToPlayBtn = document.getElementById('how-to-play');
+        const choices = document.querySelectorAll('.choice');
+        const levelButtons = document.querySelectorAll('.level-btn');
+        const currentLevelEl = document.getElementById('current-level');
+        
+        // Audio elements
+        const winSound = document.getElementById('win-sound');
+        const loseSound = document.getElementById('lose-sound');
+        const drawSound = document.getElementById('draw-sound');
+        const clickSound = document.getElementById('click-sound');
+        const bgAudio = document.getElementById('bg-music');
+        
+        // Initialize animated background
+        function createAnimatedBackground() {
+            const bg = document.getElementById('animated-bg');
+            const colors = ['rgba(255, 255, 255, 0.05)', 'rgba(255, 255, 255, 0.03)', 'rgba(255, 255, 255, 0.07)'];
+            
+            for (let i = 0; i < 20; i++) {
+                const shape = document.createElement('div');
+                shape.classList.add('shape');
+                
+                // Random size
+                const size = Math.random() * 150 + 50;
+                shape.style.width = `${size}px`;
+                shape.style.height = `${size}px`;
+                
+                // Random position
+                shape.style.left = `${Math.random() * 100}%`;
+                shape.style.top = `${Math.random() * 100}%`;
+                
+                // Random color
+                shape.style.background = colors[Math.floor(Math.random() * colors.length)];
+                
+                // Random animation duration
+                shape.style.animationDuration = `${Math.random() * 20 + 10}s`;
+                
+                bg.appendChild(shape);
+            }
+        }
+        
+        // Get computer choice based on level
+        function getComputerChoice() {
+            // Easy level: random choice
+            if (currentLevel === 'easy') {
+                const choices = ['✊', '✋', '✌️'];
+                return choices[Math.floor(Math.random() * 3)];
+            }
+            
+            // Medium level: counter player's last move
+            if (currentLevel === 'medium' && playerHistory.length > 0) {
+                const lastPlayerMove = playerHistory[playerHistory.length - 1];
+                
+                // Counter the last player move
+                if (lastPlayerMove === '✊') return '✋'; // Paper beats rock
+                if (lastPlayerMove === '✋') return '✌️'; // Scissors beat paper
+                if (lastPlayerMove === '✌️') return '✊'; // Rock beats scissors
+            }
+            
+            // Hard level: predict player's pattern
+            if (currentLevel === 'hard' && playerHistory.length > 1) {
+                // Count move frequencies
+                const moveCount = { '✊': 0, '✋': 0, '✌️': 0 };
+                playerHistory.forEach(move => moveCount[move]++);
+                
+                // Find the most frequent move
+                let mostFrequentMove = '✊';
+                if (moveCount['✋'] > moveCount[mostFrequentMove]) mostFrequentMove = '✋';
+                if (moveCount['✌️'] > moveCount[mostFrequentMove]) mostFrequentMove = '✌️';
+                
+                // Counter the most frequent move
+                if (mostFrequentMove === '✊') return '✋'; // Paper beats rock
+                if (mostFrequentMove === '✋') return '✌️'; // Scissors beat paper
+                if (mostFrequentMove === '✌️') return '✊'; // Rock beats scissors
+            }
+            
+            // Fallback to random choice
+            const choices = ['✊', '✋', '✌️'];
+            return choices[Math.floor(Math.random() * 3)];
+        }
+        
+        // Determine winner
+        function determineWinner(player, computer) {
+            if (player === computer) {
+                return 'draw';
+            }
+            
+            if (
+                (player === '✊' && computer === '✌️') ||
+                (player === '✋' && computer === '✊') ||
+                (player === '✌️' && computer === '✋')
+            ) {
+                return 'player';
+            }
+            
+            return 'computer';
+        }
+        
+        // Update score
+        function updateScore(winner) {
+            if (winner === 'player') {
+                playerScore++;
+                playerScoreEl.textContent = playerScore;
+                winSound.currentTime = 0;
+                winSound.play();
+                resultTextEl.textContent = 'You Win!';
+                resultTextEl.className = 'result-text win';
+            } else if (winner === 'computer') {
+                computerScore++;
+                computerScoreEl.textContent = computerScore;
+                loseSound.currentTime = 0;
+                loseSound.play();
+                resultTextEl.textContent = 'Computer Wins!';
+                resultTextEl.className = 'result-text lose';
+            } else {
+                drawSound.currentTime = 0;
+                drawSound.play();
+                resultTextEl.textContent = "It's a Draw!";
+                resultTextEl.className = 'result-text draw';
+            }
+        }
+        
+        // Handle player choice
+        function handleChoice(e) {
+            if (gameOver) return;
+            
+            clickSound.currentTime = 0;
+            clickSound.play();
+            
+            // Add animation to choices
+            playerChoiceEl.classList.add('player-animation');
+            computerChoiceEl.classList.add('computer-animation');
+            
+            // Get choices
+            const playerChoice = e.currentTarget.id === 'rock' ? '✊' : 
+                                e.currentTarget.id === 'paper' ? '✋' : '✌️';
+            
+            // Add to player history for medium/hard levels
+            playerHistory.push(playerChoice);
+            if (playerHistory.length > 5) playerHistory.shift();
+            
+            const computerChoice = getComputerChoice();
+            
+            // Display choices after animation
+            setTimeout(() => {
+                playerChoiceEl.textContent = playerChoice;
+                computerChoiceEl.textContent = computerChoice;
+                
+                // Remove animation classes
+                playerChoiceEl.classList.remove('player-animation');
+                computerChoiceEl.classList.remove('computer-animation');
+                
+                // Add pulse effect
+                playerChoiceEl.classList.add('pulse');
+                computerChoiceEl.classList.add('pulse');
+                
+                // Remove pulse after animation
+                setTimeout(() => {
+                    playerChoiceEl.classList.remove('pulse');
+                    computerChoiceEl.classList.remove('pulse');
+                }, 500);
+                
+                // Determine winner
+                const winner = determineWinner(playerChoice, computerChoice);
+                updateScore(winner);
+            }, 1500);
+        }
+        
+        // Reset game
+        function resetGame() {
+            clickSound.currentTime = 0;
+            clickSound.play();
+            
+            playerScore = 0;
+            computerScore = 0;
+            gameOver = false;
+            playerHistory = [];
+            
+            playerScoreEl.textContent = '0';
+            computerScoreEl.textContent = '0';
+            
+            playerChoiceEl.textContent = '❓';
+            computerChoiceEl.textContent = '❓';
+            
+            resultTextEl.textContent = 'Choose your move!';
+            resultTextEl.className = 'result-text';
+        }
+        
+        // Toggle music
+        function toggleMusic() {
+            musicOn = !musicOn;
+            
+            if (musicOn) {
+                bgAudio.play();
+                musicToggle.innerHTML = '<i class="fas fa-music"></i> Music: On';
+                musicToggle.style.background = 'linear-gradient(45deg, #4ecdc4, #1a2a6c)';
+            } else {
+                bgAudio.pause();
+                musicToggle.innerHTML = '<i class="fas fa-music"></i> Music: Off';
+                musicToggle.style.background = 'linear-gradient(45deg, #ff6b6b, #ffcc00)';
+            }
+        }
+        
+        // Change level
+        function changeLevel(level) {
+            clickSound.currentTime = 0;
+            clickSound.play();
+            
+            currentLevel = level;
+            currentLevelEl.textContent = level.charAt(0).toUpperCase() + level.slice(1);
+            playerHistory = [];
+            
+            // Update active button
+            levelButtons.forEach(btn => {
+                if (btn.dataset.level === level) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            resultTextEl.textContent = `Switched to ${level} level!`;
+            resultTextEl.className = 'result-text';
+            
+            setTimeout(() => {
+                if (playerChoiceEl.textContent === '❓') {
+                    resultTextEl.textContent = 'Choose your move!';
+                }
+            }, 2000);
+        }
+        
+        // Show how to play
+        function showHowToPlay() {
+            clickSound.currentTime = 0;
+            clickSound.play();
+            
+            alert("HOW TO PLAY:\n\n1. Choose Rock, Paper, or Scissors\n2. The computer will make its choice\n3. Rock beats Scissors\n   Scissors beat Paper\n   Paper beats Rock\n4. First to 10 points wins!\n\nSelect difficulty level for more challenge!");
+        }
+        
+        // Event listeners
+        choices.forEach(choice => choice.addEventListener('click', handleChoice));
+        resetBtn.addEventListener('click', resetGame);
+        musicToggle.addEventListener('click', toggleMusic);
+        howToPlayBtn.addEventListener('click', showHowToPlay);
+        
+        levelButtons.forEach(btn => {
+            btn.addEventListener('click', () => changeLevel(btn.dataset.level));
+        });
+        
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            createAnimatedBackground();
+            // Start with music on
+            bgAudio.volume = 0.3;
+            bgAudio.play();
+            winSound.volume = 0.5;
+            loseSound.volume = 0.5;
+            drawSound.volume = 0.5;
+            clickSound.volume = 0.3;
+        });
+    </script>
+</body>
+</html>
