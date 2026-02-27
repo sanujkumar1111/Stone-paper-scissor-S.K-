@@ -1,735 +1,455 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rock Paper Scissors - Level Edition</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NovaCart - Sell Your Products Online</title>
+  <style>
+    :root {
+      --bg: #f7f8fc;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --brand: #5b67f1;
+      --brand-dark: #4048b9;
+      --accent: #14b8a6;
+      --border: #e5e7eb;
+    }
 
-        body {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            color: white;
-            overflow-x: hidden;
-        }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+    body {
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.5;
+    }
 
-        .container {
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 20px;
-            padding: 30px;
-            width: 90%;
-            max-width: 900px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-        }
+    a { color: inherit; text-decoration: none; }
 
-        h1 {
-            font-size: 3.5rem;
-            margin-bottom: 10px;
-            text-shadow: 0 0 10px #00eeff, 0 0 20px #00eeff;
-            letter-spacing: 3px;
-            animation: glow 2s infinite alternate;
-        }
+    .container { width: min(1120px, 92vw); margin: 0 auto; }
 
-        @keyframes glow {
-            from { text-shadow: 0 0 10px #00eeff, 0 0 20px #00eeff; }
-            to { text-shadow: 0 0 15px #00eeff, 0 0 30px #00eeff, 0 0 40px #00eeff; }
-        }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
 
-        .game-info {
-            display: flex;
-            justify-content: space-between;
-            margin: 20px 0;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      gap: 12px;
+    }
 
-        .level-container {
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 10px;
-            padding: 15px;
-            flex: 1;
-            min-width: 200px;
-        }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 1.2rem;
+    }
 
-        .level-title {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-            color: #ffcc00;
-        }
+    .brand-badge {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: linear-gradient(135deg, var(--brand), var(--accent));
+    }
 
-        .level-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-        .level-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            border-radius: 50px;
-            padding: 8px 15px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.15s, background 0.2s;
+    }
 
-        .level-btn.active {
-            background: linear-gradient(45deg, #4ecdc4, #1a2a6c);
-            box-shadow: 0 0 10px #00eeff;
-        }
+    .btn:hover { transform: translateY(-1px); }
 
-        .level-btn:hover:not(.active) {
-            background: rgba(255, 255, 255, 0.2);
-        }
+    .btn-primary {
+      color: #fff;
+      background: var(--brand);
+    }
 
-        .score-board {
-            display: flex;
-            justify-content: space-around;
-            margin: 20px 0;
-            gap: 20px;
-        }
+    .btn-primary:hover { background: var(--brand-dark); }
 
-        .score-box {
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 10px;
-            padding: 20px;
-            flex: 1;
-            min-width: 150px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
+    .btn-light {
+      color: var(--text);
+      background: #eef0ff;
+    }
 
-        .score-title {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            color: #ffcc00;
-        }
+    .hero {
+      padding: 70px 0 44px;
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      align-items: center;
+      gap: 26px;
+    }
 
-        .score {
-            font-size: 3rem;
-            font-weight: bold;
-        }
+    .hero h1 {
+      font-size: clamp(1.9rem, 4vw, 3.2rem);
+      line-height: 1.1;
+      margin-bottom: 14px;
+    }
 
-        .choices {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin: 40px 0;
-            flex-wrap: wrap;
-        }
+    .hero p {
+      color: var(--muted);
+      margin-bottom: 24px;
+      max-width: 56ch;
+    }
 
-        .choice {
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 5rem;
-            background: rgba(255, 255, 255, 0.1);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 5px solid transparent;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-        }
+    .hero-card {
+      background: linear-gradient(145deg, #5b67f1, #2f3cba);
+      color: #fff;
+      border-radius: 22px;
+      padding: 26px;
+      box-shadow: 0 18px 36px rgba(53, 63, 190, 0.28);
+    }
 
-        .choice:hover {
-            transform: scale(1.1);
-            background: rgba(255, 255, 255, 0.2);
-            border-color: #ffcc00;
-            box-shadow: 0 0 20px #ffcc00;
-        }
+    .hero-metrics {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(80px, 1fr));
+      gap: 12px;
+    }
 
-        .choice:active {
-            transform: scale(0.95);
-        }
+    .metric {
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 14px;
+      padding: 10px;
+      text-align: center;
+    }
 
-        #rock { color: #ff6b6b; }
-        #paper { color: #4ecdc4; }
-        #scissors { color: #ffd166; }
+    section { padding: 18px 0 40px; }
 
-        .vs-area {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 50px;
-            margin: 30px 0;
-            flex-wrap: wrap;
-        }
+    .section-title {
+      font-size: 1.55rem;
+      margin-bottom: 8px;
+    }
 
-        .choice-display {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 7rem;
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-            position: relative;
-        }
+    .section-subtitle {
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
 
-        .choice-label {
-            position: absolute;
-            top: -30px;
-            font-weight: bold;
-            color: #ffcc00;
-            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
-        }
+    .filters {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
 
-        .vs-text {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #ffcc00;
-            text-shadow: 0 0 10px #ffcc00;
-        }
+    .search {
+      flex: 1;
+      min-width: 220px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 1rem;
+    }
 
-        .result {
-            margin: 30px 0;
-            min-height: 60px;
-        }
+    .chip-row { display: flex; gap: 8px; flex-wrap: wrap; }
 
-        .result-text {
-            font-size: 2rem;
-            font-weight: bold;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-            animation: fadeIn 0.5s ease;
-        }
+    .chip {
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 999px;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+    .chip.active {
+      border-color: transparent;
+      background: #e7e9ff;
+      color: var(--brand-dark);
+      font-weight: 700;
+    }
 
-        .win { color: #4ecdc4; }
-        .lose { color: #ff6b6b; }
-        .draw { color: #ffcc00; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(220px, 1fr));
+      gap: 16px;
+    }
 
-        .controls {
-            margin: 30px 0;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
 
-        button {
-            background: linear-gradient(45deg, #ff6b6b, #ffcc00);
-            border: none;
-            border-radius: 50px;
-            padding: 12px 25px;
-            font-size: 1.1rem;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+    .card-media {
+      aspect-ratio: 4 / 3;
+      display: grid;
+      place-items: center;
+      font-size: 3rem;
+      background: linear-gradient(140deg, #eef0ff, #defaf5);
+    }
 
-        button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-        }
+    .card-body { padding: 14px; }
 
-        button:active {
-            transform: translateY(0);
-        }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-top: 6px;
+      margin-bottom: 12px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
 
-        #music-toggle {
-            background: linear-gradient(45deg, #4ecdc4, #1a2a6c);
-        }
+    .price {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text);
+    }
 
-        .level-description {
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 10px;
-            padding: 15px;
-            margin: 20px 0;
-            text-align: left;
-        }
+    .card-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
 
-        .level-description h3 {
-            color: #ffcc00;
-            margin-bottom: 10px;
-        }
+    .qty {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.95rem;
+    }
 
-        .level-description p {
-            line-height: 1.6;
-        }
+    .cart-panel {
+      margin-top: 20px;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+    }
 
-        .animated-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
-        }
+    .cart-items {
+      margin-top: 12px;
+      display: grid;
+      gap: 10px;
+    }
 
-        .shape {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.05);
-            animation: float 15s infinite linear;
-        }
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed #d1d5db;
+      color: #374151;
+      font-size: 0.95rem;
+    }
 
-        @keyframes float {
-            0% { transform: translateY(0) translateX(0) rotate(0deg); }
-            100% { transform: translateY(-1000px) translateX(1000px) rotate(720deg); }
-        }
+    footer {
+      padding: 30px 0 45px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
 
-        /* Animations */
-        @keyframes playerShake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-20px); }
-            75% { transform: translateX(20px); }
-        }
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; }
+      .grid { grid-template-columns: repeat(2, minmax(180px, 1fr)); }
+    }
 
-        @keyframes computerShake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(20px); }
-            75% { transform: translateX(-20px); }
-        }
-
-        .player-animation {
-            animation: playerShake 0.5s ease 3;
-        }
-
-        .computer-animation {
-            animation: computerShake 0.5s ease 3;
-        }
-
-        .pulse {
-            animation: pulse 0.5s ease;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-
-        @media (max-width: 768px) {
-            .choices, .vs-area {
-                gap: 15px;
-            }
-            
-            .choice {
-                width: 100px;
-                height: 100px;
-                font-size: 4rem;
-            }
-            
-            .choice-display {
-                width: 140px;
-                height: 140px;
-                font-size: 5rem;
-            }
-            
-            h1 {
-                font-size: 2.5rem;
-            }
-            
-            .game-info {
-                flex-direction: column;
-            }
-        }
-    </style>
+    @media (max-width: 600px) {
+      .grid { grid-template-columns: 1fr; }
+      .nav-actions { width: 100%; justify-content: flex-end; }
+    }
+  </style>
 </head>
 <body>
-    <div class="animated-bg" id="animated-bg"></div>
-    
-    <div class="container">
-        <h1><i class="fas fa-fist-raised"></i> ROCK PAPER SCISSORS <i class="fas fa-hand-scissors"></i></h1>
-        
-        <div class="game-info">
-            <div class="level-container">
-                <div class="level-title">DIFFICULTY LEVEL</div>
-                <div class="level-buttons">
-                    <button class="level-btn active" data-level="easy">Easy</button>
-                    <button class="level-btn" data-level="medium">Medium</button>
-                    <button class="level-btn" data-level="hard">Hard</button>
-                </div>
-            </div>
-            
-            <div class="level-container">
-                <div class="level-title">CURRENT LEVEL</div>
-                <div class="score" id="current-level">Easy</div>
-            </div>
-        </div>
-        
-        <div class="level-description">
-            <h3>About Difficulty Levels:</h3>
-            <p>
-                <strong>Easy</strong>: Computer makes random choices<br>
-                <strong>Medium</strong>: Computer counters your last move<br>
-                <strong>Hard</strong>: Computer predicts your patterns
-            </p>
-        </div>
-        
-        <div class="score-board">
-            <div class="score-box">
-                <div class="score-title">PLAYER</div>
-                <div class="score" id="player-score">0</div>
-            </div>
-            <div class="score-box">
-                <div class="score-title">COMPUTER</div>
-                <div class="score" id="computer-score">0</div>
-            </div>
-        </div>
-        
-        <div class="choices">
-            <div class="choice" id="rock" title="Rock"><i class="fas fa-fist-raised"></i></div>
-            <div class="choice" id="paper" title="Paper"><i class="fas fa-hand-paper"></i></div>
-            <div class="choice" id="scissors" title="Scissors"><i class="fas fa-hand-scissors"></i></div>
-        </div>
-        
-        <div class="vs-area">
-            <div class="choice-display">
-                <div class="choice-label">YOU</div>
-                <div id="player-choice">❓</div>
-            </div>
-            <div class="vs-text">VS</div>
-            <div class="choice-display">
-                <div class="choice-label">COMPUTER</div>
-                <div id="computer-choice">❓</div>
-            </div>
-        </div>
-        
-        <div class="result">
-            <div class="result-text" id="result-text">Choose your move to start!</div>
-        </div>
-        
-        <div class="controls">
-            <button id="reset-btn"><i class="fas fa-redo"></i> Reset Game</button>
-            <button id="music-toggle"><i class="fas fa-music"></i> Music: On</button>
-            <button id="how-to-play"><i class="fas fa-question-circle"></i> How to Play</button>
-        </div>
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <span class="brand-badge">N</span>
+        <span>NovaCart</span>
+      </div>
+      <div class="nav-actions">
+        <button class="btn btn-light" type="button">Manage Store</button>
+        <button class="btn btn-primary" type="button">Start Selling</button>
+      </div>
     </div>
-    
-    <audio id="bg-music" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
-    </audio>
-    
-    <audio id="win-sound">
-        <source src="https://www.soundjay.com/misc/sounds/magic-chime-01.mp3" type="audio/mp3">
-    </audio>
-    
-    <audio id="lose-sound">
-        <source src="https://www.soundjay.com/misc/sounds/fail-trombone-03.mp3" type="audio/mp3">
-    </audio>
-    
-    <audio id="draw-sound">
-        <source src="https://www.soundjay.com/buttons/sounds/button-09.mp3" type="audio/mp3">
-    </audio>
-    
-    <audio id="click-sound">
-        <source src="https://www.soundjay.com/buttons/sounds/button-10.mp3" type="audio/mp3">
-    </audio>
+  </header>
 
-    <script>
-        // Game variables
-        let playerScore = 0;
-        let computerScore = 0;
-        let gameOver = false;
-        let musicOn = true;
-        let currentLevel = 'easy';
-        let playerHistory = [];
-        
-        // DOM elements
-        const playerScoreEl = document.getElementById('player-score');
-        const computerScoreEl = document.getElementById('computer-score');
-        const playerChoiceEl = document.getElementById('player-choice');
-        const computerChoiceEl = document.getElementById('computer-choice');
-        const resultTextEl = document.getElementById('result-text');
-        const resetBtn = document.getElementById('reset-btn');
-        const musicToggle = document.getElementById('music-toggle');
-        const howToPlayBtn = document.getElementById('how-to-play');
-        const choices = document.querySelectorAll('.choice');
-        const levelButtons = document.querySelectorAll('.level-btn');
-        const currentLevelEl = document.getElementById('current-level');
-        
-        // Audio elements
-        const winSound = document.getElementById('win-sound');
-        const loseSound = document.getElementById('lose-sound');
-        const drawSound = document.getElementById('draw-sound');
-        const clickSound = document.getElementById('click-sound');
-        const bgAudio = document.getElementById('bg-music');
-        
-        // Initialize animated background
-        function createAnimatedBackground() {
-            const bg = document.getElementById('animated-bg');
-            const colors = ['rgba(255, 255, 255, 0.05)', 'rgba(255, 255, 255, 0.03)', 'rgba(255, 255, 255, 0.07)'];
-            
-            for (let i = 0; i < 20; i++) {
-                const shape = document.createElement('div');
-                shape.classList.add('shape');
-                
-                // Random size
-                const size = Math.random() * 150 + 50;
-                shape.style.width = `${size}px`;
-                shape.style.height = `${size}px`;
-                
-                // Random position
-                shape.style.left = `${Math.random() * 100}%`;
-                shape.style.top = `${Math.random() * 100}%`;
-                
-                // Random color
-                shape.style.background = colors[Math.floor(Math.random() * colors.length)];
-                
-                // Random animation duration
-                shape.style.animationDuration = `${Math.random() * 20 + 10}s`;
-                
-                bg.appendChild(shape);
-            }
-        }
-        
-        // Get computer choice based on level
-        function getComputerChoice() {
-            // Easy level: random choice
-            if (currentLevel === 'easy') {
-                const choices = ['✊', '✋', '✌️'];
-                return choices[Math.floor(Math.random() * 3)];
-            }
-            
-            // Medium level: counter player's last move
-            if (currentLevel === 'medium' && playerHistory.length > 0) {
-                const lastPlayerMove = playerHistory[playerHistory.length - 1];
-                
-                // Counter the last player move
-                if (lastPlayerMove === '✊') return '✋'; // Paper beats rock
-                if (lastPlayerMove === '✋') return '✌️'; // Scissors beat paper
-                if (lastPlayerMove === '✌️') return '✊'; // Rock beats scissors
-            }
-            
-            // Hard level: predict player's pattern
-            if (currentLevel === 'hard' && playerHistory.length > 1) {
-                // Count move frequencies
-                const moveCount = { '✊': 0, '✋': 0, '✌️': 0 };
-                playerHistory.forEach(move => moveCount[move]++);
-                
-                // Find the most frequent move
-                let mostFrequentMove = '✊';
-                if (moveCount['✋'] > moveCount[mostFrequentMove]) mostFrequentMove = '✋';
-                if (moveCount['✌️'] > moveCount[mostFrequentMove]) mostFrequentMove = '✌️';
-                
-                // Counter the most frequent move
-                if (mostFrequentMove === '✊') return '✋'; // Paper beats rock
-                if (mostFrequentMove === '✋') return '✌️'; // Scissors beat paper
-                if (mostFrequentMove === '✌️') return '✊'; // Rock beats scissors
-            }
-            
-            // Fallback to random choice
-            const choices = ['✊', '✋', '✌️'];
-            return choices[Math.floor(Math.random() * 3)];
-        }
-        
-        // Determine winner
-        function determineWinner(player, computer) {
-            if (player === computer) {
-                return 'draw';
-            }
-            
-            if (
-                (player === '✊' && computer === '✌️') ||
-                (player === '✋' && computer === '✊') ||
-                (player === '✌️' && computer === '✋')
-            ) {
-                return 'player';
-            }
-            
-            return 'computer';
-        }
-        
-        // Update score
-        function updateScore(winner) {
-            if (winner === 'player') {
-                playerScore++;
-                playerScoreEl.textContent = playerScore;
-                winSound.currentTime = 0;
-                winSound.play();
-                resultTextEl.textContent = 'You Win!';
-                resultTextEl.className = 'result-text win';
-            } else if (winner === 'computer') {
-                computerScore++;
-                computerScoreEl.textContent = computerScore;
-                loseSound.currentTime = 0;
-                loseSound.play();
-                resultTextEl.textContent = 'Computer Wins!';
-                resultTextEl.className = 'result-text lose';
-            } else {
-                drawSound.currentTime = 0;
-                drawSound.play();
-                resultTextEl.textContent = "It's a Draw!";
-                resultTextEl.className = 'result-text draw';
-            }
-        }
-        
-        // Handle player choice
-        function handleChoice(e) {
-            if (gameOver) return;
-            
-            clickSound.currentTime = 0;
-            clickSound.play();
-            
-            // Add animation to choices
-            playerChoiceEl.classList.add('player-animation');
-            computerChoiceEl.classList.add('computer-animation');
-            
-            // Get choices
-            const playerChoice = e.currentTarget.id === 'rock' ? '✊' : 
-                                e.currentTarget.id === 'paper' ? '✋' : '✌️';
-            
-            // Add to player history for medium/hard levels
-            playerHistory.push(playerChoice);
-            if (playerHistory.length > 5) playerHistory.shift();
-            
-            const computerChoice = getComputerChoice();
-            
-            // Display choices after animation
-            setTimeout(() => {
-                playerChoiceEl.textContent = playerChoice;
-                computerChoiceEl.textContent = computerChoice;
-                
-                // Remove animation classes
-                playerChoiceEl.classList.remove('player-animation');
-                computerChoiceEl.classList.remove('computer-animation');
-                
-                // Add pulse effect
-                playerChoiceEl.classList.add('pulse');
-                computerChoiceEl.classList.add('pulse');
-                
-                // Remove pulse after animation
-                setTimeout(() => {
-                    playerChoiceEl.classList.remove('pulse');
-                    computerChoiceEl.classList.remove('pulse');
-                }, 500);
-                
-                // Determine winner
-                const winner = determineWinner(playerChoice, computerChoice);
-                updateScore(winner);
-            }, 1500);
-        }
-        
-        // Reset game
-        function resetGame() {
-            clickSound.currentTime = 0;
-            clickSound.play();
-            
-            playerScore = 0;
-            computerScore = 0;
-            gameOver = false;
-            playerHistory = [];
-            
-            playerScoreEl.textContent = '0';
-            computerScoreEl.textContent = '0';
-            
-            playerChoiceEl.textContent = '❓';
-            computerChoiceEl.textContent = '❓';
-            
-            resultTextEl.textContent = 'Choose your move!';
-            resultTextEl.className = 'result-text';
-        }
-        
-        // Toggle music
-        function toggleMusic() {
-            musicOn = !musicOn;
-            
-            if (musicOn) {
-                bgAudio.play();
-                musicToggle.innerHTML = '<i class="fas fa-music"></i> Music: On';
-                musicToggle.style.background = 'linear-gradient(45deg, #4ecdc4, #1a2a6c)';
-            } else {
-                bgAudio.pause();
-                musicToggle.innerHTML = '<i class="fas fa-music"></i> Music: Off';
-                musicToggle.style.background = 'linear-gradient(45deg, #ff6b6b, #ffcc00)';
-            }
-        }
-        
-        // Change level
-        function changeLevel(level) {
-            clickSound.currentTime = 0;
-            clickSound.play();
-            
-            currentLevel = level;
-            currentLevelEl.textContent = level.charAt(0).toUpperCase() + level.slice(1);
-            playerHistory = [];
-            
-            // Update active button
-            levelButtons.forEach(btn => {
-                if (btn.dataset.level === level) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
-            
-            resultTextEl.textContent = `Switched to ${level} level!`;
-            resultTextEl.className = 'result-text';
-            
-            setTimeout(() => {
-                if (playerChoiceEl.textContent === '❓') {
-                    resultTextEl.textContent = 'Choose your move!';
-                }
-            }, 2000);
-        }
-        
-        // Show how to play
-        function showHowToPlay() {
-            clickSound.currentTime = 0;
-            clickSound.play();
-            
-            alert("HOW TO PLAY:\n\n1. Choose Rock, Paper, or Scissors\n2. The computer will make its choice\n3. Rock beats Scissors\n   Scissors beat Paper\n   Paper beats Rock\n4. First to 10 points wins!\n\nSelect difficulty level for more challenge!");
-        }
-        
-        // Event listeners
-        choices.forEach(choice => choice.addEventListener('click', handleChoice));
-        resetBtn.addEventListener('click', resetGame);
-        musicToggle.addEventListener('click', toggleMusic);
-        howToPlayBtn.addEventListener('click', showHowToPlay);
-        
-        levelButtons.forEach(btn => {
-            btn.addEventListener('click', () => changeLevel(btn.dataset.level));
-        });
-        
-        // Initialize
-        window.addEventListener('DOMContentLoaded', () => {
-            createAnimatedBackground();
-            // Start with music on
-            bgAudio.volume = 0.3;
-            bgAudio.play();
-            winSound.volume = 0.5;
-            loseSound.volume = 0.5;
-            drawSound.volume = 0.5;
-            clickSound.volume = 0.3;
-        });
-    </script>
+  <main class="container">
+    <section class="hero">
+      <div>
+        <h1>Sell your products online with a clean, modern storefront.</h1>
+        <p>
+          Add your catalog, highlight bestsellers, and accept orders through a simple shopping experience.
+          This starter website is ready for your products, pricing, and branding.
+        </p>
+        <button class="btn btn-primary" type="button">Add New Product</button>
+      </div>
+      <aside class="hero-card">
+        <h2>Store performance</h2>
+        <p>Track how your products are doing this week.</p>
+        <div class="hero-metrics">
+          <div class="metric"><strong>124</strong><br/>Orders</div>
+          <div class="metric"><strong>$6.8k</strong><br/>Revenue</div>
+          <div class="metric"><strong>32</strong><br/>Products</div>
+        </div>
+      </aside>
+    </section>
+
+    <section>
+      <h2 class="section-title">Featured Products</h2>
+      <p class="section-subtitle">Use this section to showcase items you want to sell first.</p>
+
+      <div class="filters">
+        <input id="searchInput" class="search" type="search" placeholder="Search products..." />
+        <div class="chip-row" id="categoryFilters">
+          <button class="chip active" data-category="all" type="button">All</button>
+          <button class="chip" data-category="fashion" type="button">Fashion</button>
+          <button class="chip" data-category="home" type="button">Home</button>
+          <button class="chip" data-category="tech" type="button">Tech</button>
+        </div>
+      </div>
+
+      <div class="grid" id="productGrid"></div>
+
+      <div class="cart-panel">
+        <h3>Your cart</h3>
+        <p class="section-subtitle">Quick order summary for your customers.</p>
+        <div class="cart-items" id="cartItems">
+          <p>No products added yet.</p>
+        </div>
+        <p style="margin-top: 12px;"><strong>Total: $<span id="cartTotal">0.00</span></strong></p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © 2026 NovaCart • Built to help you sell your products online.
+  </footer>
+
+  <script>
+    const products = [
+      { id: 1, name: 'Minimal Linen Shirt', category: 'fashion', price: 39, stock: 15, emoji: '👕' },
+      { id: 2, name: 'Ceramic Aroma Diffuser', category: 'home', price: 49, stock: 8, emoji: '🏺' },
+      { id: 3, name: 'Wireless Earbuds Pro', category: 'tech', price: 99, stock: 20, emoji: '🎧' },
+      { id: 4, name: 'Handcrafted Desk Lamp', category: 'home', price: 65, stock: 5, emoji: '💡' },
+      { id: 5, name: 'Eco Tote Bag', category: 'fashion', price: 22, stock: 31, emoji: '👜' },
+      { id: 6, name: 'Portable Smart Charger', category: 'tech', price: 45, stock: 17, emoji: '🔋' }
+    ];
+
+    const cart = new Map();
+    let currentCategory = 'all';
+
+    const productGrid = document.getElementById('productGrid');
+    const cartItems = document.getElementById('cartItems');
+    const cartTotal = document.getElementById('cartTotal');
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilters = document.getElementById('categoryFilters');
+
+    function filteredProducts() {
+      const term = searchInput.value.trim().toLowerCase();
+      return products.filter((item) => {
+        const categoryMatch = currentCategory === 'all' || item.category === currentCategory;
+        const nameMatch = item.name.toLowerCase().includes(term);
+        return categoryMatch && nameMatch;
+      });
+    }
+
+    function renderProducts() {
+      const list = filteredProducts();
+      if (list.length === 0) {
+        productGrid.innerHTML = '<p>No products match your search.</p>';
+        return;
+      }
+
+      productGrid.innerHTML = list.map((item) => `
+        <article class="card">
+          <div class="card-media" aria-hidden="true">${item.emoji}</div>
+          <div class="card-body">
+            <h3>${item.name}</h3>
+            <div class="card-meta">
+              <span>${item.category}</span>
+              <span>Stock: ${item.stock}</span>
+            </div>
+            <div class="card-actions">
+              <span class="price">$${item.price.toFixed(2)}</span>
+              <button class="btn btn-primary" data-id="${item.id}" type="button">Add to cart</button>
+            </div>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function renderCart() {
+      const entries = Array.from(cart.values());
+      if (entries.length === 0) {
+        cartItems.innerHTML = '<p>No products added yet.</p>';
+        cartTotal.textContent = '0.00';
+        return;
+      }
+
+      let total = 0;
+      cartItems.innerHTML = entries.map(({ name, quantity, price }) => {
+        const subtotal = quantity * price;
+        total += subtotal;
+        return `<div class="cart-item"><span>${name} × ${quantity}</span><strong>$${subtotal.toFixed(2)}</strong></div>`;
+      }).join('');
+      cartTotal.textContent = total.toFixed(2);
+    }
+
+    productGrid.addEventListener('click', (event) => {
+      const btn = event.target.closest('button[data-id]');
+      if (!btn) return;
+
+      const id = Number(btn.dataset.id);
+      const product = products.find((item) => item.id === id);
+      if (!product) return;
+
+      const existing = cart.get(id);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.set(id, { ...product, quantity: 1 });
+      }
+
+      renderCart();
+    });
+
+    searchInput.addEventListener('input', renderProducts);
+
+    categoryFilters.addEventListener('click', (event) => {
+      const chip = event.target.closest('.chip');
+      if (!chip) return;
+
+      currentCategory = chip.dataset.category;
+      document.querySelectorAll('.chip').forEach((node) => node.classList.remove('active'));
+      chip.classList.add('active');
+      renderProducts();
+    });
+
+    renderProducts();
+    renderCart();
+  </script>
 </body>
 </html>
