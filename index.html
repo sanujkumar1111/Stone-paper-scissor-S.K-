@@ -1,735 +1,432 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rock Paper Scissors - Level Edition</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GlowCart | Sell Your Products</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --card: #121934;
+      --muted: #9eb0d3;
+      --text: #f4f7ff;
+      --accent: #6ee7b7;
+      --accent-2: #60a5fa;
+      --danger: #f87171;
+      --border: #273154;
+    }
 
-        body {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            color: white;
-            overflow-x: hidden;
-        }
+    * { box-sizing: border-box; }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(circle at 20% 0%, #1c2650, var(--bg) 45%);
+      color: var(--text);
+      line-height: 1.5;
+    }
 
-        .container {
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 20px;
-            padding: 30px;
-            width: 90%;
-            max-width: 900px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-        }
+    .wrap {
+      width: min(1100px, 92%);
+      margin: 0 auto;
+    }
 
-        h1 {
-            font-size: 3.5rem;
-            margin-bottom: 10px;
-            text-shadow: 0 0 10px #00eeff, 0 0 20px #00eeff;
-            letter-spacing: 3px;
-            animation: glow 2s infinite alternate;
-        }
+    header {
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(8px);
+      background: rgba(11, 16, 32, 0.75);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      z-index: 10;
+    }
 
-        @keyframes glow {
-            from { text-shadow: 0 0 10px #00eeff, 0 0 20px #00eeff; }
-            to { text-shadow: 0 0 15px #00eeff, 0 0 30px #00eeff, 0 0 40px #00eeff; }
-        }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      gap: 16px;
+    }
 
-        .game-info {
-            display: flex;
-            justify-content: space-between;
-            margin: 20px 0;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
+    .brand {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+    }
 
-        .level-container {
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 10px;
-            padding: 15px;
-            flex: 1;
-            min-width: 200px;
-        }
+    .brand span { color: var(--accent); }
 
-        .level-title {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-            color: #ffcc00;
-        }
+    .nav-links {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
 
-        .level-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
+    .nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
 
-        .level-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            border-radius: 50px;
-            padding: 8px 15px;
-            color: white;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
+    .hero {
+      padding: 74px 0 36px;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 26px;
+      align-items: center;
+    }
 
-        .level-btn.active {
-            background: linear-gradient(45deg, #4ecdc4, #1a2a6c);
-            box-shadow: 0 0 10px #00eeff;
-        }
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      line-height: 1.1;
+    }
 
-        .level-btn:hover:not(.active) {
-            background: rgba(255, 255, 255, 0.2);
-        }
+    .hero p {
+      color: var(--muted);
+      max-width: 60ch;
+    }
 
-        .score-board {
-            display: flex;
-            justify-content: space-around;
-            margin: 20px 0;
-            gap: 20px;
-        }
+    .pill {
+      display: inline-block;
+      background: rgba(110, 231, 183, 0.15);
+      border: 1px solid rgba(110, 231, 183, 0.35);
+      color: var(--accent);
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 0.8rem;
+      margin-bottom: 12px;
+    }
 
-        .score-box {
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 10px;
-            padding: 20px;
-            flex: 1;
-            min-width: 150px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
+    .cta-group { display: flex; gap: 12px; flex-wrap: wrap; }
 
-        .score-title {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            color: #ffcc00;
-        }
+    button,
+    .btn {
+      border: 0;
+      padding: 11px 16px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #0b1020;
+      transition: transform 0.2s ease;
+    }
 
-        .score {
-            font-size: 3rem;
-            font-weight: bold;
-        }
+    button:hover,
+    .btn:hover { transform: translateY(-2px); }
 
-        .choices {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin: 40px 0;
-            flex-wrap: wrap;
-        }
+    .ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
 
-        .choice {
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 5rem;
-            background: rgba(255, 255, 255, 0.1);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 5px solid transparent;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-        }
+    .hero-card,
+    .section-card {
+      background: rgba(18, 25, 52, 0.86);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      box-shadow: 0 18px 30px rgba(0, 0, 0, 0.2);
+    }
 
-        .choice:hover {
-            transform: scale(1.1);
-            background: rgba(255, 255, 255, 0.2);
-            border-color: #ffcc00;
-            box-shadow: 0 0 20px #ffcc00;
-        }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
 
-        .choice:active {
-            transform: scale(0.95);
-        }
+    .stats div {
+      background: #0f1530;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      text-align: center;
+    }
 
-        #rock { color: #ff6b6b; }
-        #paper { color: #4ecdc4; }
-        #scissors { color: #ffd166; }
+    .stats strong { display: block; font-size: 1.2rem; }
+    .stats span { color: var(--muted); font-size: 0.82rem; }
 
-        .vs-area {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 50px;
-            margin: 30px 0;
-            flex-wrap: wrap;
-        }
+    section { padding: 30px 0; }
+    h2 { margin: 0 0 14px; font-size: 1.7rem; }
 
-        .choice-display {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 7rem;
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-            position: relative;
-        }
+    .sub { color: var(--muted); margin: 0 0 20px; }
 
-        .choice-label {
-            position: absolute;
-            top: -30px;
-            font-weight: bold;
-            color: #ffcc00;
-            text-shadow: 0 0 5px rgba(0, 0, 0, 0.8);
-        }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
 
-        .vs-text {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #ffcc00;
-            text-shadow: 0 0 10px #ffcc00;
-        }
+    .product {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
 
-        .result {
-            margin: 30px 0;
-            min-height: 60px;
-        }
+    .product .img {
+      min-height: 155px;
+      background: linear-gradient(130deg, #1d2b57, #142f49 45%, #1b3d36);
+      display: grid;
+      place-items: center;
+      font-size: 2.1rem;
+    }
 
-        .result-text {
-            font-size: 2rem;
-            font-weight: bold;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-            animation: fadeIn 0.5s ease;
-        }
+    .product-body { padding: 14px; }
+    .product h3 { margin: 0 0 6px; }
+    .price {
+      color: var(--accent);
+      font-weight: 800;
+      margin: 8px 0 12px;
+    }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+    .product p { color: var(--muted); margin: 0; font-size: 0.95rem; }
 
-        .win { color: #4ecdc4; }
-        .lose { color: #ff6b6b; }
-        .draw { color: #ffcc00; }
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 0.95fr;
+      gap: 16px;
+      align-items: start;
+    }
 
-        .controls {
-            margin: 30px 0;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
+    .cart-list { margin: 12px 0; padding: 0; list-style: none; }
+    .cart-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      color: #dbe6ff;
+      font-size: 0.95rem;
+    }
 
-        button {
-            background: linear-gradient(45deg, #ff6b6b, #ffcc00);
-            border: none;
-            border-radius: 50px;
-            padding: 12px 25px;
-            font-size: 1.1rem;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+    .total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.1rem;
+      margin-top: 8px;
+      font-weight: 700;
+    }
 
-        button:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
-        }
+    .small { color: var(--muted); font-size: 0.9rem; }
 
-        button:active {
-            transform: translateY(0);
-        }
+    form {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
 
-        #music-toggle {
-            background: linear-gradient(45deg, #4ecdc4, #1a2a6c);
-        }
+    input,
+    textarea {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #0d1430;
+      color: var(--text);
+      padding: 10px 12px;
+      font: inherit;
+    }
 
-        .level-description {
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 10px;
-            padding: 15px;
-            margin: 20px 0;
-            text-align: left;
-        }
+    textarea { min-height: 100px; resize: vertical; }
 
-        .level-description h3 {
-            color: #ffcc00;
-            margin-bottom: 10px;
-        }
+    footer {
+      padding: 30px 0 42px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.93rem;
+    }
 
-        .level-description p {
-            line-height: 1.6;
-        }
+    .success {
+      color: var(--accent);
+      min-height: 1.4em;
+      margin-top: 8px;
+      font-size: 0.93rem;
+    }
 
-        .animated-bg {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            overflow: hidden;
-        }
-
-        .shape {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.05);
-            animation: float 15s infinite linear;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0) translateX(0) rotate(0deg); }
-            100% { transform: translateY(-1000px) translateX(1000px) rotate(720deg); }
-        }
-
-        /* Animations */
-        @keyframes playerShake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-20px); }
-            75% { transform: translateX(20px); }
-        }
-
-        @keyframes computerShake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(20px); }
-            75% { transform: translateX(-20px); }
-        }
-
-        .player-animation {
-            animation: playerShake 0.5s ease 3;
-        }
-
-        .computer-animation {
-            animation: computerShake 0.5s ease 3;
-        }
-
-        .pulse {
-            animation: pulse 0.5s ease;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-
-        @media (max-width: 768px) {
-            .choices, .vs-area {
-                gap: 15px;
-            }
-            
-            .choice {
-                width: 100px;
-                height: 100px;
-                font-size: 4rem;
-            }
-            
-            .choice-display {
-                width: 140px;
-                height: 140px;
-                font-size: 5rem;
-            }
-            
-            h1 {
-                font-size: 2.5rem;
-            }
-            
-            .game-info {
-                flex-direction: column;
-            }
-        }
-    </style>
+    @media (max-width: 920px) {
+      .hero,
+      .row,
+      .grid { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
 </head>
 <body>
-    <div class="animated-bg" id="animated-bg"></div>
-    
-    <div class="container">
-        <h1><i class="fas fa-fist-raised"></i> ROCK PAPER SCISSORS <i class="fas fa-hand-scissors"></i></h1>
-        
-        <div class="game-info">
-            <div class="level-container">
-                <div class="level-title">DIFFICULTY LEVEL</div>
-                <div class="level-buttons">
-                    <button class="level-btn active" data-level="easy">Easy</button>
-                    <button class="level-btn" data-level="medium">Medium</button>
-                    <button class="level-btn" data-level="hard">Hard</button>
-                </div>
-            </div>
-            
-            <div class="level-container">
-                <div class="level-title">CURRENT LEVEL</div>
-                <div class="score" id="current-level">Easy</div>
-            </div>
-        </div>
-        
-        <div class="level-description">
-            <h3>About Difficulty Levels:</h3>
-            <p>
-                <strong>Easy</strong>: Computer makes random choices<br>
-                <strong>Medium</strong>: Computer counters your last move<br>
-                <strong>Hard</strong>: Computer predicts your patterns
-            </p>
-        </div>
-        
-        <div class="score-board">
-            <div class="score-box">
-                <div class="score-title">PLAYER</div>
-                <div class="score" id="player-score">0</div>
-            </div>
-            <div class="score-box">
-                <div class="score-title">COMPUTER</div>
-                <div class="score" id="computer-score">0</div>
-            </div>
-        </div>
-        
-        <div class="choices">
-            <div class="choice" id="rock" title="Rock"><i class="fas fa-fist-raised"></i></div>
-            <div class="choice" id="paper" title="Paper"><i class="fas fa-hand-paper"></i></div>
-            <div class="choice" id="scissors" title="Scissors"><i class="fas fa-hand-scissors"></i></div>
-        </div>
-        
-        <div class="vs-area">
-            <div class="choice-display">
-                <div class="choice-label">YOU</div>
-                <div id="player-choice">❓</div>
-            </div>
-            <div class="vs-text">VS</div>
-            <div class="choice-display">
-                <div class="choice-label">COMPUTER</div>
-                <div id="computer-choice">❓</div>
-            </div>
-        </div>
-        
-        <div class="result">
-            <div class="result-text" id="result-text">Choose your move to start!</div>
-        </div>
-        
-        <div class="controls">
-            <button id="reset-btn"><i class="fas fa-redo"></i> Reset Game</button>
-            <button id="music-toggle"><i class="fas fa-music"></i> Music: On</button>
-            <button id="how-to-play"><i class="fas fa-question-circle"></i> How to Play</button>
-        </div>
+  <header>
+    <div class="wrap nav">
+      <div class="brand">Glow<span>Cart</span></div>
+      <nav class="nav-links">
+        <a href="#products">Products</a>
+        <a href="#cart">Cart</a>
+        <a href="#contact">Contact</a>
+      </nav>
     </div>
-    
-    <audio id="bg-music" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mp3">
-    </audio>
-    
-    <audio id="win-sound">
-        <source src="https://www.soundjay.com/misc/sounds/magic-chime-01.mp3" type="audio/mp3">
-    </audio>
-    
-    <audio id="lose-sound">
-        <source src="https://www.soundjay.com/misc/sounds/fail-trombone-03.mp3" type="audio/mp3">
-    </audio>
-    
-    <audio id="draw-sound">
-        <source src="https://www.soundjay.com/buttons/sounds/button-09.mp3" type="audio/mp3">
-    </audio>
-    
-    <audio id="click-sound">
-        <source src="https://www.soundjay.com/buttons/sounds/button-10.mp3" type="audio/mp3">
-    </audio>
+  </header>
 
-    <script>
-        // Game variables
-        let playerScore = 0;
-        let computerScore = 0;
-        let gameOver = false;
-        let musicOn = true;
-        let currentLevel = 'easy';
-        let playerHistory = [];
-        
-        // DOM elements
-        const playerScoreEl = document.getElementById('player-score');
-        const computerScoreEl = document.getElementById('computer-score');
-        const playerChoiceEl = document.getElementById('player-choice');
-        const computerChoiceEl = document.getElementById('computer-choice');
-        const resultTextEl = document.getElementById('result-text');
-        const resetBtn = document.getElementById('reset-btn');
-        const musicToggle = document.getElementById('music-toggle');
-        const howToPlayBtn = document.getElementById('how-to-play');
-        const choices = document.querySelectorAll('.choice');
-        const levelButtons = document.querySelectorAll('.level-btn');
-        const currentLevelEl = document.getElementById('current-level');
-        
-        // Audio elements
-        const winSound = document.getElementById('win-sound');
-        const loseSound = document.getElementById('lose-sound');
-        const drawSound = document.getElementById('draw-sound');
-        const clickSound = document.getElementById('click-sound');
-        const bgAudio = document.getElementById('bg-music');
-        
-        // Initialize animated background
-        function createAnimatedBackground() {
-            const bg = document.getElementById('animated-bg');
-            const colors = ['rgba(255, 255, 255, 0.05)', 'rgba(255, 255, 255, 0.03)', 'rgba(255, 255, 255, 0.07)'];
-            
-            for (let i = 0; i < 20; i++) {
-                const shape = document.createElement('div');
-                shape.classList.add('shape');
-                
-                // Random size
-                const size = Math.random() * 150 + 50;
-                shape.style.width = `${size}px`;
-                shape.style.height = `${size}px`;
-                
-                // Random position
-                shape.style.left = `${Math.random() * 100}%`;
-                shape.style.top = `${Math.random() * 100}%`;
-                
-                // Random color
-                shape.style.background = colors[Math.floor(Math.random() * colors.length)];
-                
-                // Random animation duration
-                shape.style.animationDuration = `${Math.random() * 20 + 10}s`;
-                
-                bg.appendChild(shape);
-            }
-        }
-        
-        // Get computer choice based on level
-        function getComputerChoice() {
-            // Easy level: random choice
-            if (currentLevel === 'easy') {
-                const choices = ['✊', '✋', '✌️'];
-                return choices[Math.floor(Math.random() * 3)];
-            }
-            
-            // Medium level: counter player's last move
-            if (currentLevel === 'medium' && playerHistory.length > 0) {
-                const lastPlayerMove = playerHistory[playerHistory.length - 1];
-                
-                // Counter the last player move
-                if (lastPlayerMove === '✊') return '✋'; // Paper beats rock
-                if (lastPlayerMove === '✋') return '✌️'; // Scissors beat paper
-                if (lastPlayerMove === '✌️') return '✊'; // Rock beats scissors
-            }
-            
-            // Hard level: predict player's pattern
-            if (currentLevel === 'hard' && playerHistory.length > 1) {
-                // Count move frequencies
-                const moveCount = { '✊': 0, '✋': 0, '✌️': 0 };
-                playerHistory.forEach(move => moveCount[move]++);
-                
-                // Find the most frequent move
-                let mostFrequentMove = '✊';
-                if (moveCount['✋'] > moveCount[mostFrequentMove]) mostFrequentMove = '✋';
-                if (moveCount['✌️'] > moveCount[mostFrequentMove]) mostFrequentMove = '✌️';
-                
-                // Counter the most frequent move
-                if (mostFrequentMove === '✊') return '✋'; // Paper beats rock
-                if (mostFrequentMove === '✋') return '✌️'; // Scissors beat paper
-                if (mostFrequentMove === '✌️') return '✊'; // Rock beats scissors
-            }
-            
-            // Fallback to random choice
-            const choices = ['✊', '✋', '✌️'];
-            return choices[Math.floor(Math.random() * 3)];
-        }
-        
-        // Determine winner
-        function determineWinner(player, computer) {
-            if (player === computer) {
-                return 'draw';
-            }
-            
-            if (
-                (player === '✊' && computer === '✌️') ||
-                (player === '✋' && computer === '✊') ||
-                (player === '✌️' && computer === '✋')
-            ) {
-                return 'player';
-            }
-            
-            return 'computer';
-        }
-        
-        // Update score
-        function updateScore(winner) {
-            if (winner === 'player') {
-                playerScore++;
-                playerScoreEl.textContent = playerScore;
-                winSound.currentTime = 0;
-                winSound.play();
-                resultTextEl.textContent = 'You Win!';
-                resultTextEl.className = 'result-text win';
-            } else if (winner === 'computer') {
-                computerScore++;
-                computerScoreEl.textContent = computerScore;
-                loseSound.currentTime = 0;
-                loseSound.play();
-                resultTextEl.textContent = 'Computer Wins!';
-                resultTextEl.className = 'result-text lose';
-            } else {
-                drawSound.currentTime = 0;
-                drawSound.play();
-                resultTextEl.textContent = "It's a Draw!";
-                resultTextEl.className = 'result-text draw';
-            }
-        }
-        
-        // Handle player choice
-        function handleChoice(e) {
-            if (gameOver) return;
-            
-            clickSound.currentTime = 0;
-            clickSound.play();
-            
-            // Add animation to choices
-            playerChoiceEl.classList.add('player-animation');
-            computerChoiceEl.classList.add('computer-animation');
-            
-            // Get choices
-            const playerChoice = e.currentTarget.id === 'rock' ? '✊' : 
-                                e.currentTarget.id === 'paper' ? '✋' : '✌️';
-            
-            // Add to player history for medium/hard levels
-            playerHistory.push(playerChoice);
-            if (playerHistory.length > 5) playerHistory.shift();
-            
-            const computerChoice = getComputerChoice();
-            
-            // Display choices after animation
-            setTimeout(() => {
-                playerChoiceEl.textContent = playerChoice;
-                computerChoiceEl.textContent = computerChoice;
-                
-                // Remove animation classes
-                playerChoiceEl.classList.remove('player-animation');
-                computerChoiceEl.classList.remove('computer-animation');
-                
-                // Add pulse effect
-                playerChoiceEl.classList.add('pulse');
-                computerChoiceEl.classList.add('pulse');
-                
-                // Remove pulse after animation
-                setTimeout(() => {
-                    playerChoiceEl.classList.remove('pulse');
-                    computerChoiceEl.classList.remove('pulse');
-                }, 500);
-                
-                // Determine winner
-                const winner = determineWinner(playerChoice, computerChoice);
-                updateScore(winner);
-            }, 1500);
-        }
-        
-        // Reset game
-        function resetGame() {
-            clickSound.currentTime = 0;
-            clickSound.play();
-            
-            playerScore = 0;
-            computerScore = 0;
-            gameOver = false;
-            playerHistory = [];
-            
-            playerScoreEl.textContent = '0';
-            computerScoreEl.textContent = '0';
-            
-            playerChoiceEl.textContent = '❓';
-            computerChoiceEl.textContent = '❓';
-            
-            resultTextEl.textContent = 'Choose your move!';
-            resultTextEl.className = 'result-text';
-        }
-        
-        // Toggle music
-        function toggleMusic() {
-            musicOn = !musicOn;
-            
-            if (musicOn) {
-                bgAudio.play();
-                musicToggle.innerHTML = '<i class="fas fa-music"></i> Music: On';
-                musicToggle.style.background = 'linear-gradient(45deg, #4ecdc4, #1a2a6c)';
-            } else {
-                bgAudio.pause();
-                musicToggle.innerHTML = '<i class="fas fa-music"></i> Music: Off';
-                musicToggle.style.background = 'linear-gradient(45deg, #ff6b6b, #ffcc00)';
-            }
-        }
-        
-        // Change level
-        function changeLevel(level) {
-            clickSound.currentTime = 0;
-            clickSound.play();
-            
-            currentLevel = level;
-            currentLevelEl.textContent = level.charAt(0).toUpperCase() + level.slice(1);
-            playerHistory = [];
-            
-            // Update active button
-            levelButtons.forEach(btn => {
-                if (btn.dataset.level === level) {
-                    btn.classList.add('active');
-                } else {
-                    btn.classList.remove('active');
-                }
-            });
-            
-            resultTextEl.textContent = `Switched to ${level} level!`;
-            resultTextEl.className = 'result-text';
-            
-            setTimeout(() => {
-                if (playerChoiceEl.textContent === '❓') {
-                    resultTextEl.textContent = 'Choose your move!';
-                }
-            }, 2000);
-        }
-        
-        // Show how to play
-        function showHowToPlay() {
-            clickSound.currentTime = 0;
-            clickSound.play();
-            
-            alert("HOW TO PLAY:\n\n1. Choose Rock, Paper, or Scissors\n2. The computer will make its choice\n3. Rock beats Scissors\n   Scissors beat Paper\n   Paper beats Rock\n4. First to 10 points wins!\n\nSelect difficulty level for more challenge!");
-        }
-        
-        // Event listeners
-        choices.forEach(choice => choice.addEventListener('click', handleChoice));
-        resetBtn.addEventListener('click', resetGame);
-        musicToggle.addEventListener('click', toggleMusic);
-        howToPlayBtn.addEventListener('click', showHowToPlay);
-        
-        levelButtons.forEach(btn => {
-            btn.addEventListener('click', () => changeLevel(btn.dataset.level));
-        });
-        
-        // Initialize
-        window.addEventListener('DOMContentLoaded', () => {
-            createAnimatedBackground();
-            // Start with music on
-            bgAudio.volume = 0.3;
-            bgAudio.play();
-            winSound.volume = 0.5;
-            loseSound.volume = 0.5;
-            drawSound.volume = 0.5;
-            clickSound.volume = 0.3;
-        });
-    </script>
+  <main class="wrap">
+    <section class="hero">
+      <div>
+        <span class="pill">Launch your online store today</span>
+        <h1>Sell your products with a clean, modern storefront.</h1>
+        <p>
+          Showcase best-sellers, collect orders, and let customers reach you instantly.
+          This template is ready for your product names, prices, and branding.
+        </p>
+        <div class="cta-group">
+          <a class="btn" href="#products">Shop now</a>
+          <a class="btn ghost" href="#contact">Become a seller</a>
+        </div>
+      </div>
+      <aside class="hero-card">
+        <h3 style="margin-top:0">Store snapshot</h3>
+        <p class="small">A quick overview of your business performance.</p>
+        <div class="stats">
+          <div><strong>124</strong><span>Orders</span></div>
+          <div><strong>4.9★</strong><span>Avg Rating</span></div>
+          <div><strong>18</strong><span>Products</span></div>
+        </div>
+      </aside>
+    </section>
+
+    <section id="products">
+      <h2>Featured products</h2>
+      <p class="sub">Click any item to add it to cart.</p>
+      <div class="grid" id="productGrid"></div>
+    </section>
+
+    <section class="row">
+      <article class="section-card" id="cart">
+        <h2 style="font-size:1.4rem">Your cart</h2>
+        <p class="small">No backend needed for demo mode — cart runs in-browser.</p>
+        <ul class="cart-list" id="cartList">
+          <li><span>Your cart is empty.</span><span></span></li>
+        </ul>
+        <div class="total">
+          <span>Total</span>
+          <span id="cartTotal">$0.00</span>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:14px;">
+          <button id="checkoutBtn">Checkout</button>
+          <button class="ghost" id="clearBtn">Clear cart</button>
+        </div>
+        <p id="cartMessage" class="success"></p>
+      </article>
+
+      <article class="section-card" id="contact">
+        <h2 style="font-size:1.4rem">Contact / order inquiry</h2>
+        <p class="small">Use this form to collect customer details and custom requests.</p>
+        <form id="contactForm">
+          <input name="name" placeholder="Full name" required />
+          <input type="email" name="email" placeholder="Email address" required />
+          <textarea name="message" placeholder="What would you like to order?" required></textarea>
+          <button type="submit">Send message</button>
+        </form>
+        <p id="formMessage" class="success"></p>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    © <span id="year"></span> GlowCart. Built to help you start selling online quickly.
+  </footer>
+
+  <script>
+    const products = [
+      { id: 1, name: 'Aurora Hoodie', price: 49.99, icon: '🧥', desc: 'Soft premium cotton hoodie in 4 colors.' },
+      { id: 2, name: 'Minimal Sneakers', price: 69.99, icon: '👟', desc: 'Everyday lightweight sneakers with comfort sole.' },
+      { id: 3, name: 'Smart Bottle', price: 24.99, icon: '🧴', desc: 'Temperature-display bottle that keeps drinks fresh.' },
+      { id: 4, name: 'Desk Lamp Pro', price: 34.50, icon: '💡', desc: 'Adjustable LED lamp with warm and cool modes.' },
+      { id: 5, name: 'Canvas Tote', price: 18.00, icon: '👜', desc: 'Durable eco-friendly tote for daily use.' },
+      { id: 6, name: 'Wireless Earbuds', price: 79.00, icon: '🎧', desc: 'Clear audio with active noise reduction.' }
+    ];
+
+    const cart = [];
+    const productGrid = document.getElementById('productGrid');
+    const cartList = document.getElementById('cartList');
+    const cartTotal = document.getElementById('cartTotal');
+    const cartMessage = document.getElementById('cartMessage');
+
+    function renderProducts() {
+      productGrid.innerHTML = products.map(product => `
+        <article class="product">
+          <div class="img">${product.icon}</div>
+          <div class="product-body">
+            <h3>${product.name}</h3>
+            <p>${product.desc}</p>
+            <div class="price">$${product.price.toFixed(2)}</div>
+            <button data-id="${product.id}">Add to cart</button>
+          </div>
+        </article>
+      `).join('');
+
+      productGrid.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', () => addToCart(Number(button.dataset.id)));
+      });
+    }
+
+    function addToCart(id) {
+      const item = products.find(product => product.id === id);
+      if (!item) return;
+
+      const existing = cart.find(product => product.id === id);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ ...item, qty: 1 });
+      }
+
+      cartMessage.textContent = `${item.name} added to cart.`;
+      renderCart();
+    }
+
+    function renderCart() {
+      if (!cart.length) {
+        cartList.innerHTML = '<li><span>Your cart is empty.</span><span></span></li>';
+        cartTotal.textContent = '$0.00';
+        return;
+      }
+
+      cartList.innerHTML = cart.map(item => `
+        <li>
+          <span>${item.name} × ${item.qty}</span>
+          <span>$${(item.price * item.qty).toFixed(2)}</span>
+        </li>
+      `).join('');
+
+      const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+      cartTotal.textContent = `$${total.toFixed(2)}`;
+    }
+
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      cart.length = 0;
+      cartMessage.textContent = 'Cart cleared.';
+      renderCart();
+    });
+
+    document.getElementById('checkoutBtn').addEventListener('click', () => {
+      if (!cart.length) {
+        cartMessage.textContent = 'Add products before checkout.';
+        return;
+      }
+      cartMessage.textContent = 'Checkout request submitted! Connect a payment gateway next.';
+    });
+
+    document.getElementById('contactForm').addEventListener('submit', event => {
+      event.preventDefault();
+      event.target.reset();
+      document.getElementById('formMessage').textContent = 'Thanks! We will contact you shortly.';
+    });
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    renderProducts();
+    renderCart();
+  </script>
 </body>
 </html>
